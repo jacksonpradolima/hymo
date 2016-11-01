@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -30,35 +31,31 @@ import java.util.List;
  */
 public class SlidingWindow extends AbstractRewardRepository {
     
-    private LinkedList<LLHHistory> slidingWindow;
+    private LinkedList<LLHHistory> window;
   
     private final int windowSize;
     
     public SlidingWindow(List<? extends ILowLevelHeuristic> llhs, int windowSize) {
         super(llhs);
         this.windowSize = windowSize;
-        this.slidingWindow = new LinkedList<>();
+        this.window = new LinkedList<>();
         
         for (ILowLevelHeuristic llh : llhs) {
-            this.slidingWindow.add(new LLHHistory(llh, 0, new Reward(1)));            
+            this.window.add(new LLHHistory(llh, 0, new Reward(1)));            
         }
     }
     
     @Override
     public void clear() {
-        this.slidingWindow.stream().forEach(h -> {
-            this.slidingWindow.add(new LLHHistory(h.getLLH(), 0, new Reward(1)));
-        });
+        this.window.stream().forEach(h -> this.window.add(new LLHHistory(h.getLLH(), 0, new Reward(1))));
     }
     
     @Override
     public long getCountApplications(ILowLevelHeuristic llh) {
-        //return this.slidingWindow.stream().filter(f -> f.getLLH().equals(llh)).count();
-
         // this form count faster
         long count = 0;
         
-        for (LLHHistory history : slidingWindow) {
+        for (LLHHistory history : window) {
             if (history.getLLH().equals(llh)) {
                 ++count;
             }
@@ -68,10 +65,10 @@ public class SlidingWindow extends AbstractRewardRepository {
     }
     
     @Override
-    public HashMap<ILowLevelHeuristic, ArrayList<LLHHistory>> getHistory() {
+    public Map<ILowLevelHeuristic, ArrayList<LLHHistory>> getHistory() {
         HashMap<ILowLevelHeuristic, ArrayList<LLHHistory>> history = new HashMap();
         
-        this.slidingWindow.stream().forEach(r -> {
+        this.window.stream().forEach(r -> {
             ArrayList<LLHHistory> llhHistory = new ArrayList<>();
             
             if (history.containsKey(r.getLLH())) {
@@ -87,28 +84,19 @@ public class SlidingWindow extends AbstractRewardRepository {
     }
     
     @Override
-    public double getReward(ILowLevelHeuristic llh) {
-        /*double sum = 0;
-
-        for (LLHHistory history : slidingWindow) {
-            if (history.getLLH().equals(llh)) {
-                sum += history.getReward().getValue();
-            }
-        }
-        
-        return sum;*/
-        return this.slidingWindow.stream().filter(f -> f.getLLH().equals(llh)).mapToDouble(m -> m.getReward().getValue()).sum();
+    public double getReward(ILowLevelHeuristic llh) {     
+        return this.window.stream().filter(f -> f.getLLH().equals(llh)).mapToDouble(m -> m.getReward().getValue()).sum();
     }
     
     @Override
     public void update(ILowLevelHeuristic llh, Reward reward) {
         super.update(llh, reward);        
         
-        this.slidingWindow.addLast(new LLHHistory(llh, getCountApplies(llh), reward));
+        this.window.addLast(new LLHHistory(llh, getCountApplies(llh), reward));
 
         // Truncate
-        if (slidingWindow.size() > windowSize) {
-            slidingWindow.removeFirst();
+        if (window.size() > windowSize) {
+            window.removeFirst();
         }
     }
 }
