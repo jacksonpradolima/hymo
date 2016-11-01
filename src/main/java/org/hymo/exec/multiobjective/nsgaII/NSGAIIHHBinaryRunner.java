@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.hymo.exec.multiobjective.nsgaII;
+package org.hymo.exec.multiobjective.nsgaii;
 
 import java.util.ArrayList;
 import java.util.List;
