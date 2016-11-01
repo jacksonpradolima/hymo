@@ -15,6 +15,7 @@
  */
 package org.hymo.algorithm.multiobjective.nsgaii;
 
+import org.hymo.algorithm.HHVariant;
 import org.hymo.core.heuristicselector.AbstractHeuristicSelector;
 import java.util.List;
 import org.uma.jmetal.operator.SelectionOperator;
@@ -33,12 +34,14 @@ import org.uma.jmetal.util.evaluator.impl.SequentialSolutionListEvaluator;
  * @version 1.0
  * @param <S>
  */
-public class NSGAIIHHBuilder<S extends Solution<?>> implements AlgorithmBuilder<NSGAIIHH<S>> {
+public class NSGAIIHHBuilder<S extends Solution<?>> implements AlgorithmBuilder<NSGAIIHH<S>> { 
+    private HHVariant variant;
 
     private SolutionListEvaluator<S> evaluator;
     private final AbstractHeuristicSelector heuristicSelector;
     private int maxEvaluations;
     private int populationSize;
+    
     /**
      * NSGAIIHHBuilder class
      */
@@ -47,6 +50,7 @@ public class NSGAIIHHBuilder<S extends Solution<?>> implements AlgorithmBuilder<
 
     /**
      * NSGAIIHHBuilder constructor
+     *
      * @param problem
      * @param heuristicSelector
      */
@@ -57,11 +61,25 @@ public class NSGAIIHHBuilder<S extends Solution<?>> implements AlgorithmBuilder<
         this.heuristicSelector = heuristicSelector;
         selectionOperator = new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<>());
         evaluator = new SequentialSolutionListEvaluator<>();
+
+        this.variant = HHVariant.HHInternalReproduction;
+    }
+
+    public NSGAIIHHBuilder<S> setVariant(HHVariant variant) {
+        this.variant = variant;
+        return this;
     }
 
     @Override
     public NSGAIIHH<S> build() {
-        return new NSGAIIHH<>(problem, maxEvaluations, populationSize, heuristicSelector, selectionOperator, evaluator);
+        switch (variant) {
+            case HHInternalReproduction:
+                return new NSGAIIHH<>(problem, maxEvaluations, populationSize, heuristicSelector, selectionOperator, evaluator);
+            case HHExternalReproduction:
+                return new NSGAIIHHExternalReproduction<>(problem, maxEvaluations, populationSize, heuristicSelector, selectionOperator, evaluator);
+            default:
+                return new NSGAIIHH<>(problem, maxEvaluations, populationSize, heuristicSelector, selectionOperator, evaluator);
+        }
     }
 
     public AbstractHeuristicSelector getHeuristicSelector() {
@@ -89,7 +107,6 @@ public class NSGAIIHHBuilder<S extends Solution<?>> implements AlgorithmBuilder<
         return evaluator;
     }
 
-    
     public NSGAIIHHBuilder<S> setMaxEvaluations(int maxEvaluations) {
         if (maxEvaluations < 0) {
             throw new JMetalException("maxEvaluations is negative: " + maxEvaluations);
