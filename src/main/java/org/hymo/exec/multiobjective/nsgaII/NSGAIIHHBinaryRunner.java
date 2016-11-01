@@ -69,8 +69,6 @@ public class NSGAIIHHBinaryRunner extends ExperimentAlgorithmRunner {
         selection = new BinaryTournamentSelection<>();
 
         heuristicSelector = new ChoiceFunction<>(llhs, new HITODominanceComparator(), new RankedBased(llhs), 1, 0.0005);
-        //heuristicSelector = new FRRMAB<>(llhs, new HITODominanceComparator(), new SlidingWindow(llhs, 50));
-        //heuristicSelector = new Random<>(llhs, new HITODominanceComparator(), new RankedBased(llhs));
 
         String directory = String.format("results/%s/NSGAIIHH_%s/%s", "OneZeroMax", heuristicSelector.toString(), "EVA_60000_POP_200");
 
@@ -82,7 +80,7 @@ public class NSGAIIHHBinaryRunner extends ExperimentAlgorithmRunner {
                     .setPopulationSize(200)
                     .build();
 
-            String run = i + "";
+            String run = Integer.toString(i);
             System.out.println("Run: " + run);
 
             AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm).execute();
