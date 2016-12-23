@@ -5,10 +5,15 @@
  */
 package org.hymo.algorithm.multiobjective.spea2;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.hymo.core.heuristicselector.AbstractHeuristicSelector;
 import org.hymo.core.lowlevelheuristic.ILowLevelHeuristic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uma.jmetal.algorithm.impl.AbstractGeneticAlgorithm;
 import org.uma.jmetal.algorithm.multiobjective.spea2.util.EnvironmentalSelection;
 import org.uma.jmetal.operator.SelectionOperator;
@@ -25,6 +30,12 @@ import org.uma.jmetal.util.solutionattribute.impl.StrengthRawFitness;
  */
 @SuppressWarnings("serial")
 public class SPEA2HH<S extends Solution<?>> extends AbstractGeneticAlgorithm<S, List<S>> {
+
+    private static final Logger logger = LoggerFactory.getLogger(SPEA2HH.class);
+    
+    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    protected double percentualProgress;
+    protected double percentualProgressAux;
 
     protected final AbstractHeuristicSelector heuristicSelector;
     protected final int maxIterations;
@@ -47,6 +58,9 @@ public class SPEA2HH<S extends Solution<?>> extends AbstractGeneticAlgorithm<S, 
         this.archive = new ArrayList<>(archiveSize);
 
         this.evaluator = evaluator;
+
+        percentualProgress = 0.0;
+        percentualProgressAux = 0.0;
     }
 
     @Override
@@ -61,6 +75,13 @@ public class SPEA2HH<S extends Solution<?>> extends AbstractGeneticAlgorithm<S, 
 
     @Override
     protected boolean isStoppingConditionReached() {
+        percentualProgress = (iterations * 100) / maxIterations;
+        
+        if (percentualProgress != percentualProgressAux) {            
+            logger.info(percentualProgress + "% in " + dateFormat.format(new Date()));
+            percentualProgressAux = percentualProgress;
+        } 
+        
         return iterations >= maxIterations;
     }
 
@@ -94,7 +115,7 @@ public class SPEA2HH<S extends Solution<?>> extends AbstractGeneticAlgorithm<S, 
 
             // Select the new LLH
             ILowLevelHeuristic llh = heuristicSelector.getNextLowLevelHeuristic();
-            
+
             // Apply the LLH            
             List<S> offspring = new ArrayList<S>() {
                 {

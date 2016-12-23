@@ -43,8 +43,9 @@ public class CrossoverMutationLowLevelHeuristic<S extends Solution<?>> implement
 
     /**
      * Low-level heuristic that uses crossover and mutation
+     *
      * @param crossover
-     * @param mutation 
+     * @param mutation
      */
     public CrossoverMutationLowLevelHeuristic(CrossoverOperator crossover, MutationOperator mutation) {
         this.crossoverOperator = crossover;
@@ -125,7 +126,7 @@ public class CrossoverMutationLowLevelHeuristic<S extends Solution<?>> implement
 
     @Override
     public String toString() {
-        return String.format("Crossover(%s) - Mutation(%s)",
+        return String.format("%s_%s",
                 getCrossoverOperator().getClass().getSimpleName(),
                 getMutationOperator().getClass().getSimpleName());
     }

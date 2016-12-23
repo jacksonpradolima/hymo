@@ -42,8 +42,7 @@ public class NSGAIIHHBinaryRunner extends ExperimentAlgorithmRunner {
      * @throws java.io.IOException
      * @throws SecurityException
      * @throws ClassNotFoundException Invoking command: java
-     * org.uma.jmetal.runner.multiobjective.NSGAIIBinaryRunner problemName
-     * [referenceFront]
+     * org.uma.jmetal.runner.multiobjective.NSGAIIBinaryRunner problemName [referenceFront]
      */
     public static void main(String[] args) throws Exception {
 
@@ -83,12 +82,11 @@ public class NSGAIIHHBinaryRunner extends ExperimentAlgorithmRunner {
             String run = Integer.toString(i);
             System.out.println("Run: " + run);
 
-            AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm).execute();
-
+            long runningTime = System.nanoTime();
+            algorithm.run();
+            long computingTime = System.nanoTime() - runningTime;
             List<BinarySolution> population = algorithm.getResult();
 
-            long computingTime = algorithmRunner.getComputingTime();
-            
             //Escreve os resultados
             printFinalSolutionSet(population, directory, run);
             printComputingTime(computingTime, directory, run);
