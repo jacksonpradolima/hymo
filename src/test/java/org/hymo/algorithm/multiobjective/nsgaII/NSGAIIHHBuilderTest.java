@@ -33,11 +33,13 @@ import org.uma.jmetal.problem.multiobjective.OneZeroMax;
 import org.uma.jmetal.solution.BinarySolution;
 import org.uma.jmetal.util.AlgorithmRunner;
 import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
 
 /**
  *
  * @author Jackson Antonio do Prado Lima <jacksonpradolima at gmail.com>
  */
+@Ignore
 public class NSGAIIHHBuilderTest {
     
     BinaryProblem problem;

@@ -33,16 +33,13 @@ import org.uma.jmetal.solution.BinarySolution;
 import org.uma.jmetal.util.AlgorithmRunner;
 import static org.junit.Assert.assertTrue;
 import org.junit.Ignore;
-import org.uma.jmetal.algorithm.multiobjective.spea2.SPEA2Builder;
-import static org.uma.jmetal.runner.AbstractAlgorithmRunner.printFinalSolutionSet;
-import static org.uma.jmetal.runner.AbstractAlgorithmRunner.printQualityIndicators;
-import org.uma.jmetal.util.ProblemUtils;
 import org.uma.jmetal.util.comparator.RankingAndCrowdingDistanceComparator;
 
 /**
  *
  * @author Jackson Antonio do Prado Lima <jacksonpradolima at gmail.com>
  */
+@Ignore
 public class SPEA2HHBuilderTest {
 
     BinaryProblem problem;
