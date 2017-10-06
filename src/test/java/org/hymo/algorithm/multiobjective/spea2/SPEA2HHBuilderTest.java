@@ -53,8 +53,9 @@ public class SPEA2HHBuilderTest {
         selection = new BinaryTournamentSelection<>(new RankingAndCrowdingDistanceComparator<BinarySolution>());
         llhs = new ArrayList<>();
 
-        double crossoverProbability = 0.9;
-        double mutationProbability = 1.0 / problem.getNumberOfBits(0);
+        // When call "low-level heuristic" it must be applied
+        double crossoverProbability = 1.0;
+        double mutationProbability = 1.0;
 
         CrossoverOperator singlePoint = new SinglePointCrossover(crossoverProbability);
 
